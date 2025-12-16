@@ -216,17 +216,33 @@ with left:
     st.caption(f"League format: **{league_format}** (format affects scoring, but v1 keeps projections simple.)")
 
 with right:
-    st.markdown("#### Details (select a RB)")
+    st.markdown("#### Receipts (select a RB)")
+
     names = df["name"].tolist()
     selected = st.selectbox("RB", names, index=0)
     row = df[df["name"] == selected].iloc[0]
 
     st.metric("Baseline", row["baseline"])
     st.metric("Adjusted", row["adjusted"])
+
     st.write("**Range:**", row["range"])
     st.write("**Confidence:**", row["confidence"])
-    st.write("**Flags:**", row["flags"])
-    st.write("**Why:**", row["reasons"])
+
+    st.markdown("#### Context Flags")
+    if row["flags"] != "—":
+        for flag in row["flags"].split(","):
+            st.markdown(f"- {flag.strip()}")
+    else:
+        st.write("No significant context flags.")
+
+    st.markdown("#### Why This Changed")
+    st.write(row["reasons"])
+
+    st.divider()
+    st.markdown("#### Film Signals (Coming Soon)")
+    st.caption(
+        "Future versions will include interpretable movement signals derived from video (burst, cut efficiency, fatigue)."
+    )
 
 st.divider()
 st.caption(
